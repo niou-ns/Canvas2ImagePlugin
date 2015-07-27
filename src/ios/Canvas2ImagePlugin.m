@@ -9,6 +9,7 @@
 
 #import "Canvas2ImagePlugin.h"
 #import <Cordova/CDV.h>
+#import "AssetsLibrary/AssetsLibrary.h"
 
 @implementation Canvas2ImagePlugin
 @synthesize callbackId;
@@ -23,10 +24,22 @@
 {
     self.callbackId = command.callbackId;
 	NSData* imageData = [NSData dataFromBase64String:[command.arguments objectAtIndex:0]];
-	
-	UIImage* image = [[[UIImage alloc] initWithData:imageData] autorelease];	
-	UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
-	
+
+	UIImage* image = [[[UIImage alloc] initWithData:imageData] autorelease];
+  ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+  [library writeImageToSavedPhotosAlbum: [image CGImage] orientation:(ALAssertOrientation[image imageOrientation] completionBlock:^(NSURL *assetURL, NSError *error) {
+    if (error) {
+      NSLog(@"ERROR: %@",error);
+      CDVPluginResult* result = [CDVPluginResult resultWithStatus: CDVCommandStatus_ERROR messageAsString:error.description];
+    	[self.webView stringByEvaluatingJavaScriptFromString:[result toErrorCallbackString: self.callbackId]];
+    } else {
+      NSLog(@"url %@", assetURL);
+      CDVPluginResult* result = [CDVPluginResult resultWithStatus: CDVCommandStatus_OK messageAsString:assetURL];
+      [self.webView stringByEvaluatingJavaScriptFromString:[result toSuccessCallbackString: self.callbackId]];
+    }
+  })]
+	//UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+
 }
 
 - (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
@@ -49,7 +62,7 @@
 }
 
 - (void)dealloc
-{	
+{
 	[callbackId release];
     [super dealloc];
 }
