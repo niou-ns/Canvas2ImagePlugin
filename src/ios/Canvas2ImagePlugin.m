@@ -23,7 +23,7 @@
 - (void)saveImageDataToLibrary:(CDVInvokedUrlCommand*)command
 {
     self.callbackId = command.callbackId;
-    NSData* imageData = [NSData dataFromBase64String:[command.arguments objectAtIndex:0]];
+    NSData* imageData = [NSData cdv_dataFromBase64String:[command.arguments objectAtIndex:0]];
 
     UIImage* image = [[[UIImage alloc] initWithData:imageData] autorelease];
     ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
@@ -31,11 +31,12 @@
         if (error) {
             NSLog(@"ERROR: %@",error);
             CDVPluginResult* result = [CDVPluginResult resultWithStatus: CDVCommandStatus_ERROR messageAsString:error.description];
-            [self.webView stringByEvaluatingJavaScriptFromString:[result toErrorCallbackString: self.callbackId]];
+            [self.commandDelegate sendPluginResult:result callbackId: self.callbackId];
         } else {
             NSLog(@"url %@", assetURL);
-            CDVPluginResult* result = [CDVPluginResult resultWithStatus: CDVCommandStatus_OK messageAsString:assetURL];
-            [self.webView stringByEvaluatingJavaScriptFromString:[result toSuccessCallbackString: self.callbackId]];
+            NSString *urlString = [assetURL absoluteString];
+            CDVPluginResult* result = [CDVPluginResult resultWithStatus: CDVCommandStatus_OK messageAsString:urlString];
+            [self.commandDelegate sendPluginResult:result callbackId: self.callbackId];
         }
     }];
     //UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
@@ -50,14 +51,14 @@
         // Show error message...
         NSLog(@"ERROR: %@",error);
         CDVPluginResult* result = [CDVPluginResult resultWithStatus: CDVCommandStatus_ERROR messageAsString:error.description];
-        [self.webView stringByEvaluatingJavaScriptFromString:[result toErrorCallbackString: self.callbackId]];
+        [self.commandDelegate sendPluginResult:result callbackId: self.callbackId];
     }
     else  // No errors
     {
         // Show message image successfully saved
         NSLog(@"IMAGE SAVED!");
         CDVPluginResult* result = [CDVPluginResult resultWithStatus: CDVCommandStatus_OK messageAsString:@"Image saved"];
-        [self.webView stringByEvaluatingJavaScriptFromString:[result toSuccessCallbackString: self.callbackId]];
+        [self.commandDelegate sendPluginResult:result callbackId: self.callbackId];
     }
 }
 
