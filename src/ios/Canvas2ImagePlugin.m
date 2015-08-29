@@ -9,7 +9,7 @@
 
 #import "Canvas2ImagePlugin.h"
 #import <Cordova/CDV.h>
-#import "AssetsLibrary/AssetsLibrary.h"
+//#import "AssetsLibrary/AssetsLibrary.h"
 
 @implementation Canvas2ImagePlugin
 @synthesize callbackId;
@@ -26,7 +26,7 @@
     NSData* imageData = [NSData cdv_dataFromBase64String:[command.arguments objectAtIndex:0]];
 
     UIImage* image = [[[UIImage alloc] initWithData:imageData] autorelease];
-    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+    /*ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
     [library writeImageToSavedPhotosAlbum:[image CGImage] orientation:(ALAssetOrientation)[image imageOrientation] completionBlock:^(NSURL *assetURL, NSError *error){
         if (error) {
             NSLog(@"ERROR: %@",error);
@@ -38,8 +38,8 @@
             CDVPluginResult* result = [CDVPluginResult resultWithStatus: CDVCommandStatus_OK messageAsString:urlString];
             [self.commandDelegate sendPluginResult:result callbackId: self.callbackId];
         }
-    }];
-    //UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+    }];*/
+    UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
 
 }
 
