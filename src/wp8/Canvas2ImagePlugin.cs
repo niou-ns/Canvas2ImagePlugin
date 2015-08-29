@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Media.PhoneExtensions;
 using System;
 using System.IO;
 using System.Text;
@@ -28,15 +29,16 @@ public class Canvas2ImagePlugin : BaseCommand
                 string fileName = String.Format("c2i_{0:yyyyMMdd_HHmmss}", DateTime.Now);
                 var library = new MediaLibrary();
                 var picture = library.SavePicture(fileName, imageStream);
+                // Get path of saved file for social sharing
+                var extraPath = MediaLibraryExtensions.GetPath(picture);
 
                 if (picture.Name.Contains(fileName))
                 {
-                    DispatchCommandResult(new PluginResult(PluginResult.Status.OK, 
-                        "Image saved: " + picture.Name));
+                    DispatchCommandResult(new PluginResult(PluginResult.Status.OK, extraPath);
                 }
                 else
                 {
-                    DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR, 
+                    DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR,
                         "Failed to save image: " + picture.Name));
                 }
             }
