@@ -34,7 +34,7 @@ public class Canvas2ImagePlugin : BaseCommand
 
                 if (picture.Name.Contains(fileName))
                 {
-                    DispatchCommandResult(new PluginResult(PluginResult.Status.OK, extraPath);
+                    DispatchCommandResult(new PluginResult(PluginResult.Status.OK, extraPath));
                 }
                 else
                 {
