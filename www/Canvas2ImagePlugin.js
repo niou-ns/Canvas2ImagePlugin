@@ -20,7 +20,9 @@
         else {
             var canvas = (typeof canvasId === "string") ? document.getElementById(canvasId) : canvasId;
             if (exportType === 'image/jpeg') {
-              var imageData = canvas.toDataURL(exportType).replace(/data:image\/jpeg;base64,/,'');  
+              var imageData = canvas.toDataURL(exportType).replace(/data:image\/jpeg;base64,/,'');
+              // Fix for old Android
+              imageData = imageData.replace(/data:image\/png;base64,/,''); 
             } else {
               var imageData = canvas.toDataURL().replace(/data:image\/png;base64,/,'');
             }
